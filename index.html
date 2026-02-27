@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Iron Coach">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Iron Coach</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Tab bar at bottom -->
+    <nav id="tab-bar">
+      <button class="tab active" data-tab="workout" aria-label="Workout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M6.5 6.5v11M17.5 6.5v11M2 9.5v5M22 9.5v5M6.5 12h11M2 12h4.5M17.5 12H22"/>
+        </svg>
+        <span>Workout</span>
+      </button>
+      <button class="tab" data-tab="coach" aria-label="Coach">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        <span>Coach</span>
+      </button>
+      <button class="tab" data-tab="progress" aria-label="Progress">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <span>Progress</span>
+      </button>
+    </nav>
+
+    <!-- Workout Tab -->
+    <main id="view-workout" class="view active">
+      <!-- No active workout state -->
+      <div id="workout-idle" class="screen">
+        <div class="idle-content">
+          <h1>Iron Coach</h1>
+          <p class="subtitle">Ready to train?</p>
+          <div id="todays-workout-preview"></div>
+          <button id="btn-start-workout" class="btn-primary btn-xl">Start Workout</button>
+          <button id="btn-pick-workout" class="btn-secondary">Choose Workout</button>
+        </div>
+      </div>
+
+      <!-- Active workout state -->
+      <div id="workout-active" class="screen hidden">
+        <header id="workout-header">
+          <div class="workout-title-row">
+            <h2 id="workout-name">Workout</h2>
+            <button id="btn-finish-workout" class="btn-finish">Finish</button>
+          </div>
+          <div id="workout-timer" class="timer">00:00</div>
+          <div id="exercise-progress-bar">
+            <div id="exercise-progress-fill"></div>
+          </div>
+        </header>
+
+        <div id="exercise-carousel">
+          <!-- Current exercise card -->
+          <div id="exercise-card" class="exercise-card">
+            <div id="exercise-illustration" class="exercise-illustration"></div>
+            <h3 id="exercise-name" class="exercise-title"></h3>
+            <p id="exercise-target" class="exercise-target"></p>
+
+            <!-- Sets table -->
+            <div id="sets-container" class="sets-container">
+              <div class="sets-header">
+                <span class="col-set">Set</span>
+                <span class="col-prev">Previous</span>
+                <span class="col-weight">kg</span>
+                <span class="col-reps">Reps</span>
+                <span class="col-done"></span>
+              </div>
+              <div id="sets-list"></div>
+            </div>
+
+            <button id="btn-add-set" class="btn-add-set">+ Add Set</button>
+          </div>
+        </div>
+
+        <!-- Exercise nav -->
+        <div id="exercise-nav">
+          <button id="btn-prev-exercise" class="btn-nav" aria-label="Previous exercise">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span id="exercise-counter">1 / 4</span>
+          <button id="btn-next-exercise" class="btn-nav" aria-label="Next exercise">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Workout picker modal -->
+      <div id="workout-picker" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Choose Workout</h2>
+            <button class="btn-close" id="btn-close-picker">&times;</button>
+          </div>
+          <div id="workout-list" class="workout-list"></div>
+        </div>
+      </div>
+
+      <!-- Workout complete modal -->
+      <div id="workout-complete" class="modal hidden">
+        <div class="modal-content modal-complete">
+          <div class="complete-icon">&#10003;</div>
+          <h2>Workout Complete!</h2>
+          <div id="workout-summary"></div>
+          <button id="btn-dismiss-complete" class="btn-primary">Done</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Coach Tab -->
+    <main id="view-coach" class="view hidden">
+      <div class="chat-container">
+        <div id="chat-messages" class="chat-messages">
+          <div class="message assistant">
+            <div class="message-bubble">
+              Hey! I'm your Iron Coach. I can help plan your workouts based on your schedule (Tue/Wed/Fri), equipment, and goals. What would you like to work on?
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <textarea id="chat-input" placeholder="Ask your coach..." rows="1"></textarea>
+          <button id="btn-send" class="btn-send" aria-label="Send">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Progress Tab -->
+    <main id="view-progress" class="view hidden">
+      <div class="progress-container">
+        <header class="progress-header">
+          <h2>Progress</h2>
+          <div class="progress-tabs">
+            <button class="ptab active" data-ptab="charts">Charts</button>
+            <button class="ptab" data-ptab="photos">Photos</button>
+            <button class="ptab" data-ptab="history">History</button>
+          </div>
+        </header>
+
+        <div id="ptab-charts" class="ptab-content active">
+          <div id="exercise-select-wrap">
+            <select id="exercise-select"><option value="">Select exercise...</option></select>
+          </div>
+          <canvas id="progress-chart" width="360" height="240"></canvas>
+          <div id="chart-legend" class="chart-legend"></div>
+        </div>
+
+        <div id="ptab-photos" class="ptab-content hidden">
+          <button id="btn-add-photo" class="btn-primary">Add Progress Photo</button>
+          <input type="file" id="photo-input" accept="image/*" capture="environment" hidden>
+          <div id="photo-timeline" class="photo-timeline"></div>
+        </div>
+
+        <div id="ptab-history" class="ptab-content hidden">
+          <div id="workout-history"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Rest timer overlay -->
+    <div id="rest-timer-overlay" class="rest-overlay hidden">
+      <div class="rest-content">
+        <span class="rest-label">Rest</span>
+        <span id="rest-time" class="rest-time">1:30</span>
+        <div class="rest-buttons">
+          <button id="btn-rest-minus" class="btn-rest-adj">-15s</button>
+          <button id="btn-rest-skip" class="btn-rest-skip">Skip</button>
+          <button id="btn-rest-plus" class="btn-rest-adj">+15s</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/db.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

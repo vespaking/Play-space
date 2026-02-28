@@ -1,16 +1,19 @@
-const CACHE_NAME = 'iron-coach-v1';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/app.css',
-  '/app.js',
-  '/db.js',
-  '/manifest.json'
-];
+const CACHE_NAME = 'iron-coach-v2';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => {
+      // Use the service worker's scope to build correct URLs
+      const scope = self.registration.scope;
+      return cache.addAll([
+        scope,
+        scope + 'index.html',
+        scope + 'app.css',
+        scope + 'app.js',
+        scope + 'db.js',
+        scope + 'manifest.json'
+      ]);
+    })
   );
   self.skipWaiting();
 });

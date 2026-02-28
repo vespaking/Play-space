@@ -140,12 +140,129 @@ const ILLUSTRATIONS = {
   </svg>`
 };
 
+// ── Exercise Form Tips ──────────────────────────
+
+const FORM_TIPS = {
+  'barbell-curl': {
+    tips: [
+      'Stand with feet shoulder-width apart, grip the bar just outside your hips',
+      'Keep your elbows pinned to your sides throughout the movement',
+      'Squeeze your biceps hard at the top, then lower under control (3 sec negative)',
+      'Avoid swinging your body — if you need momentum, the weight is too heavy'
+    ]
+  },
+  'hammer-curl': {
+    tips: [
+      'Hold dumbbells with a neutral grip (palms facing each other)',
+      'Curl straight up without rotating your wrists',
+      'Keep upper arms stationary — only your forearms should move',
+      'Great for building the brachioradialis and overall arm thickness'
+    ]
+  },
+  'wrist-curl': {
+    tips: [
+      'Sit on a bench with forearms resting on your thighs, wrists hanging over your knees',
+      'Use a full range of motion — let the bar roll to your fingertips, then curl up',
+      'Keep the movement slow and controlled — no jerking',
+      'Use lighter weight and higher reps for forearm endurance'
+    ]
+  },
+  'reverse-curl': {
+    tips: [
+      'Grip the bar with palms facing down (pronated grip)',
+      'Keep your elbows locked at your sides',
+      'Curl up in a smooth arc, squeezing the top of your forearms at the peak',
+      'Lower slowly — the eccentric phase is where the growth happens'
+    ]
+  },
+  'bench-press': {
+    tips: [
+      'Plant your feet flat, retract and depress your shoulder blades',
+      'Grip slightly wider than shoulder-width, unrack and position over mid-chest',
+      'Lower the bar to your lower chest/nipple line with elbows at ~45 degrees',
+      'Drive through your feet and press up in a slight arc back toward the rack'
+    ]
+  },
+  'incline-dumbbell-curl': {
+    tips: [
+      'Set bench to 45-60 degrees, let arms hang straight down',
+      'This position stretches the long head of the biceps for maximum activation',
+      'Curl up without moving your elbows forward',
+      'Keep your back flat against the pad — no arching'
+    ]
+  },
+  'preacher-curl': {
+    tips: [
+      'Adjust the pad so your armpits rest at the top edge',
+      'Keep your upper arms flat against the pad throughout',
+      'Do not fully extend at the bottom — keep slight bend to protect elbows',
+      'Isolates the short head of the biceps — great for peak development'
+    ]
+  },
+  'cable-curl': {
+    tips: [
+      'Stand a step back from the pulley for constant tension',
+      'Keep elbows at your sides, curl the handle to shoulder height',
+      'Squeeze hard at the top and resist on the way down',
+      'Cable provides even resistance through the full range of motion'
+    ]
+  },
+  'tricep-pushdown': {
+    tips: [
+      'Stand with a slight forward lean, elbows pinned to your sides',
+      'Press the bar/rope down until arms are fully extended',
+      'Squeeze your triceps at the bottom, then slowly return to 90 degrees',
+      'Do not let your elbows flare forward — keep them stationary'
+    ]
+  },
+  'lat-pulldown': {
+    tips: [
+      'Sit with thighs secured under the pad, grip slightly wider than shoulder-width',
+      'Pull the bar to your upper chest by driving your elbows down and back',
+      'Lean back slightly (10-15 degrees) and squeeze your lats at the bottom',
+      'Control the bar back up — don\'t let it yank your arms'
+    ]
+  },
+  'overhead-press': {
+    tips: [
+      'Start with the bar at shoulder height, grip just outside shoulder-width',
+      'Brace your core and glutes, press straight overhead',
+      'Push your head through once the bar passes your forehead',
+      'Lock out at the top with the bar directly over your spine'
+    ]
+  },
+  'squat': {
+    tips: [
+      'Bar on upper traps, feet shoulder-width apart, toes slightly out',
+      'Break at hips and knees simultaneously, sit back and down',
+      'Keep your chest up and knees tracking over your toes',
+      'Hit parallel or below, then drive up through your heels'
+    ]
+  },
+  'deadlift': {
+    tips: [
+      'Bar over mid-foot, hip-width stance, grip just outside your knees',
+      'Flatten your back, brace your core, push the floor away with your legs',
+      'Keep the bar close to your body — it should drag up your shins',
+      'Lock out by squeezing glutes at the top — don\'t hyperextend your back'
+    ]
+  },
+  'face-pull': {
+    tips: [
+      'Set cable to upper chest height, use a rope attachment',
+      'Pull toward your face, separating the rope ends past your ears',
+      'Externally rotate your shoulders at the end — thumbs pointing back',
+      'Focus on squeezing your rear delts and upper back'
+    ]
+  }
+};
+
 // ── Default Workout Templates ───────────────────
 
 const DEFAULT_WORKOUTS = [
   {
     id: 'tue-arms-biceps',
-    name: 'Tuesday – Arms & Biceps',
+    name: 'Arms & Biceps',
     day: 'Tuesday',
     exercises: [
       { id: 'barbell-curl', name: 'Barbell Curl', target: 'Biceps', sets: 4, reps: 10, restSeconds: 90 },
@@ -158,7 +275,7 @@ const DEFAULT_WORKOUTS = [
   },
   {
     id: 'wed-upper',
-    name: 'Wednesday – Upper Body',
+    name: 'Upper Body',
     day: 'Wednesday',
     exercises: [
       { id: 'bench-press', name: 'Bench Press', target: 'Chest / Triceps', sets: 4, reps: 8, restSeconds: 120 },
@@ -171,7 +288,7 @@ const DEFAULT_WORKOUTS = [
   },
   {
     id: 'fri-full',
-    name: 'Friday – Full Body + Arms',
+    name: 'Full Body + Arms',
     day: 'Friday',
     exercises: [
       { id: 'squat', name: 'Squat', target: 'Quads / Glutes', sets: 4, reps: 8, restSeconds: 120 },
@@ -188,12 +305,9 @@ const DEFAULT_WORKOUTS = [
 
 let state = {
   activeTab: 'workout',
-  // Active workout session
-  activeWorkout: null,    // { workoutId, name, startTime, exerciseIndex, exercises: [{ ...def, sets: [{ weight, reps, done }] }] }
+  activeWorkout: null,
   workoutTimerStart: null,
-  // Rest timer
-  restTimer: null,        // { remaining, total }
-  // Coach chat
+  restTimer: null,
   chatMessages: [],
   apiKey: null,
 };
@@ -211,20 +325,16 @@ async function init() {
   registerSW();
   renderCurrentView();
 
-  // Aggressive state saving on visibility change (screen lock / app switch)
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
       saveState();
     } else {
-      // Re-entering: resync timers
       restoreTimers();
     }
   });
 
-  // Save on pagehide (iOS Safari fires this on tab close / navigate away)
   window.addEventListener('pagehide', () => saveState());
 
-  // Periodic save every 5s during active workout
   setInterval(() => {
     if (state.activeWorkout) saveState();
   }, 5000);
@@ -266,7 +376,6 @@ function saveState() {
 }
 
 async function restoreState() {
-  // Try fast localStorage first, fall back to IndexedDB
   let snapshot = IronDB.mirrorGet('appState');
   if (!snapshot) {
     snapshot = await IronDB.getState('appState');
@@ -278,14 +387,11 @@ async function restoreState() {
     state.restTimer = snapshot.restTimer || null;
   }
 
-  // Restore API key
   state.apiKey = IronDB.mirrorGet('apiKey') || await IronDB.getState('apiKey');
 
-  // Restore chat messages
   const msgs = await IronDB.getAll('chat');
   state.chatMessages = msgs.sort((a, b) => (a.id || 0) - (b.id || 0));
 
-  // Switch to correct tab
   switchTab(state.activeTab);
 }
 
@@ -314,17 +420,22 @@ function bindEvents() {
     t.addEventListener('click', () => switchTab(t.dataset.tab));
   });
 
-  // Workout idle
-  document.getElementById('btn-start-workout').addEventListener('click', startTodaysWorkout);
-  document.getElementById('btn-pick-workout').addEventListener('click', showWorkoutPicker);
-  document.getElementById('btn-close-picker').addEventListener('click', hideWorkoutPicker);
-
   // Active workout
   document.getElementById('btn-prev-exercise').addEventListener('click', () => navigateExercise(-1));
   document.getElementById('btn-next-exercise').addEventListener('click', () => navigateExercise(1));
   document.getElementById('btn-add-set').addEventListener('click', addSet);
   document.getElementById('btn-finish-workout').addEventListener('click', finishWorkout);
   document.getElementById('btn-dismiss-complete').addEventListener('click', dismissComplete);
+
+  // Cancel workout
+  document.getElementById('btn-cancel-workout').addEventListener('click', showCancelConfirm);
+  document.getElementById('btn-cancel-no').addEventListener('click', hideCancelConfirm);
+  document.getElementById('btn-cancel-yes').addEventListener('click', cancelWorkout);
+
+  // Exercise tabs (Info / Log)
+  document.querySelectorAll('.ex-tab').forEach((t) => {
+    t.addEventListener('click', () => switchExerciseTab(t.dataset.extab));
+  });
 
   // Rest timer
   document.getElementById('btn-rest-skip').addEventListener('click', hideRestTimer);
@@ -339,7 +450,6 @@ function bindEvents() {
       sendChatMessage();
     }
   });
-  // Auto-resize textarea
   document.getElementById('chat-input').addEventListener('input', (e) => {
     e.target.style.height = 'auto';
     e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
@@ -376,85 +486,58 @@ function switchTab(tabId) {
   saveState();
 }
 
+// ── Exercise Tab Switching (Info / Log) ─────────
+
+function switchExerciseTab(tabId) {
+  document.querySelectorAll('.ex-tab').forEach((t) => {
+    t.classList.toggle('active', t.dataset.extab === tabId);
+  });
+  document.getElementById('extab-log').classList.toggle('hidden', tabId !== 'log');
+  document.getElementById('extab-info').classList.toggle('hidden', tabId !== 'info');
+}
+
 // ── Workout View ────────────────────────────────
 
 function renderWorkoutView() {
   if (state.activeWorkout) {
-    document.getElementById('workout-idle').classList.add('hidden');
+    document.getElementById('workout-select').classList.add('hidden');
     document.getElementById('workout-active').classList.remove('hidden');
     renderActiveWorkout();
   } else {
-    document.getElementById('workout-idle').classList.remove('hidden');
+    document.getElementById('workout-select').classList.remove('hidden');
     document.getElementById('workout-active').classList.add('hidden');
-    renderWorkoutPreview();
+    renderWorkoutList();
   }
 }
 
-async function renderWorkoutPreview() {
-  const preview = document.getElementById('todays-workout-preview');
-  const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-  const workouts = await IronDB.getAll('workouts');
-  const todaysWorkout = workouts.find((w) => w.day === today);
-
-  if (todaysWorkout) {
-    preview.innerHTML = `
-      <div class="preview-card">
-        <div class="preview-day">${today}'s Workout</div>
-        <h3>${todaysWorkout.name}</h3>
-        <ul>${todaysWorkout.exercises.map((e) => `<li>${e.name}</li>`).join('')}</ul>
-      </div>`;
-  } else {
-    preview.innerHTML = `
-      <div class="preview-card">
-        <div class="preview-day">${today}</div>
-        <h3>Rest Day</h3>
-        <p style="color:var(--text-dim);margin-top:4px">No workout scheduled. Tap below to choose one anyway.</p>
-      </div>`;
-  }
-}
-
-async function startTodaysWorkout() {
-  const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-  const workouts = await IronDB.getAll('workouts');
-  const todaysWorkout = workouts.find((w) => w.day === today);
-
-  if (todaysWorkout) {
-    await startWorkout(todaysWorkout);
-  } else {
-    showWorkoutPicker();
-  }
-}
-
-async function showWorkoutPicker() {
+async function renderWorkoutList() {
   const workouts = await IronDB.getAll('workouts');
   const list = document.getElementById('workout-list');
-  list.innerHTML = workouts.map((w) => `
-    <div class="workout-item" data-id="${w.id}">
+  const today = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
+
+  list.innerHTML = workouts.map((w) => {
+    const isToday = w.day === today;
+    return `
+    <div class="workout-item${isToday ? ' today' : ''}" data-id="${w.id}">
+      <div class="workout-day">${w.day}${isToday ? ' — Today' : ''}</div>
       <h3>${w.name}</h3>
-      <p>${w.exercises.length} exercises · ${w.exercises.map((e) => e.target).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).join(', ')}</p>
-    </div>`).join('');
+      <div class="workout-exercises">
+        ${w.exercises.map((e) => `<span class="exercise-chip">${e.name}</span>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
 
   list.querySelectorAll('.workout-item').forEach((item) => {
     item.addEventListener('click', async () => {
       const w = workouts.find((wk) => wk.id === item.dataset.id);
-      if (w) {
-        hideWorkoutPicker();
-        await startWorkout(w);
-      }
+      if (w) await startWorkout(w);
     });
   });
-
-  document.getElementById('workout-picker').classList.remove('hidden');
-}
-
-function hideWorkoutPicker() {
-  document.getElementById('workout-picker').classList.add('hidden');
 }
 
 // ── Start Workout ───────────────────────────────
 
 async function startWorkout(template) {
-  // Get previous session data for pre-filling
   const prevData = await getPreviousSessionData(template.id);
 
   const exercises = template.exercises.map((ex) => {
@@ -489,7 +572,6 @@ async function startWorkout(template) {
 
 async function getPreviousSessionData(workoutId) {
   const sessions = await IronDB.getAll('sessions');
-  // Find most recent session for this workout
   const relevant = sessions
     .filter((s) => s.workoutId === workoutId)
     .sort((a, b) => b.date - a.date);
@@ -505,6 +587,27 @@ async function getPreviousSessionData(workoutId) {
     }));
   }
   return result;
+}
+
+// ── Cancel Workout ──────────────────────────────
+
+function showCancelConfirm() {
+  document.getElementById('cancel-confirm').classList.remove('hidden');
+}
+
+function hideCancelConfirm() {
+  document.getElementById('cancel-confirm').classList.add('hidden');
+}
+
+function cancelWorkout() {
+  document.getElementById('cancel-confirm').classList.add('hidden');
+  state.activeWorkout = null;
+  state.workoutTimerStart = null;
+  if (timerInterval) clearInterval(timerInterval);
+  hideRestTimer();
+  saveState();
+  renderWorkoutView();
+  toast('Workout discarded');
 }
 
 // ── Render Active Workout ───────────────────────
@@ -525,9 +628,23 @@ function renderActiveWorkout() {
   const pct = (completedExercises / w.exercises.length) * 100;
   document.getElementById('exercise-progress-fill').style.width = pct + '%';
 
-  // Illustration
+  // Illustration (in Info tab)
   const illust = document.getElementById('exercise-illustration');
   illust.innerHTML = ILLUSTRATIONS[ex.id] || ILLUSTRATIONS['default'];
+
+  // Form tips (in Info tab)
+  const tipsContainer = document.getElementById('exercise-form-tips');
+  const tips = FORM_TIPS[ex.id];
+  if (tips) {
+    tipsContainer.innerHTML = `
+      <h4>Form Tips</h4>
+      <ul>${tips.tips.map((t) => `<li>${t}</li>`).join('')}</ul>`;
+  } else {
+    tipsContainer.innerHTML = '<p style="color:var(--text-dim)">No form tips available for this exercise.</p>';
+  }
+
+  // Reset to Log tab when switching exercises
+  switchExerciseTab('log');
 
   // Sets
   renderSets(ex);
@@ -567,10 +684,16 @@ function renderSets(ex) {
       else if (r < pr) repsClass = 'changed-down';
     }
 
+    const weightVal = set.weight !== '' ? set.weight : '';
+
     row.innerHTML = `
       <span class="col-set">${i + 1}</span>
       <span class="col-prev">${prevText}</span>
-      <input type="number" inputmode="decimal" class="set-input ${weightClass}" value="${set.weight}" data-set="${i}" data-field="weight" placeholder="0" ${set.done ? 'readonly' : ''}>
+      <div class="weight-control">
+        <button class="btn-adj" data-set="${i}" data-delta="-5" ${set.done ? 'disabled' : ''}>-</button>
+        <input type="number" inputmode="decimal" class="set-input ${weightClass}" value="${weightVal}" data-set="${i}" data-field="weight" placeholder="0" ${set.done ? 'readonly' : ''}>
+        <button class="btn-adj" data-set="${i}" data-delta="5" ${set.done ? 'disabled' : ''}>+</button>
+      </div>
       <input type="number" inputmode="numeric" class="set-input ${repsClass}" value="${set.reps}" data-set="${i}" data-field="reps" placeholder="0" ${set.done ? 'readonly' : ''}>
       <button class="btn-check ${set.done ? 'checked' : ''}" data-set="${i}">✓</button>
     `;
@@ -587,6 +710,29 @@ function renderSets(ex) {
   container.querySelectorAll('.btn-check').forEach((btn) => {
     btn.addEventListener('click', handleSetDone);
   });
+
+  // Bind +/- weight buttons
+  container.querySelectorAll('.btn-adj').forEach((btn) => {
+    btn.addEventListener('click', handleWeightAdjust);
+  });
+}
+
+function handleWeightAdjust(e) {
+  const idx = parseInt(e.target.dataset.set);
+  const delta = parseInt(e.target.dataset.delta);
+  const ex = state.activeWorkout.exercises[state.activeWorkout.exerciseIndex];
+  const set = ex.sets[idx];
+  if (set.done) return;
+
+  const current = parseFloat(set.weight) || 0;
+  const newVal = Math.max(0, current + delta);
+  set.weight = newVal;
+
+  // Haptic feedback
+  if (navigator.vibrate) navigator.vibrate(15);
+
+  saveState();
+  renderSets(ex);
 }
 
 function handleSetInput(e) {
@@ -595,7 +741,6 @@ function handleSetInput(e) {
   const ex = state.activeWorkout.exercises[state.activeWorkout.exerciseIndex];
   ex.sets[idx][field] = e.target.value;
 
-  // Highlight comparison
   const set = ex.sets[idx];
   if (field === 'weight' && set.prevWeight !== null) {
     const cur = parseFloat(e.target.value) || 0;
@@ -621,14 +766,12 @@ function handleSetDone(e) {
   const set = ex.sets[idx];
 
   if (set.done) {
-    // Undo
     set.done = false;
     saveState();
     renderSets(ex);
     return;
   }
 
-  // Validate - must have weight and reps
   if (!set.weight && set.weight !== 0) {
     toast('Enter weight first');
     return;
@@ -642,10 +785,8 @@ function handleSetDone(e) {
   saveState();
   renderSets(ex);
 
-  // Haptic feedback
   if (navigator.vibrate) navigator.vibrate(30);
 
-  // Show rest timer if not the last set of the last exercise
   const allDone = ex.sets.every((s) => s.done);
   const isLastExercise = state.activeWorkout.exerciseIndex === state.activeWorkout.exercises.length - 1;
 
@@ -653,7 +794,6 @@ function handleSetDone(e) {
     showRestTimer(ex.restSeconds || 90);
   }
 
-  // Auto-advance to next exercise if all sets done
   if (allDone && !isLastExercise) {
     setTimeout(() => {
       navigateExercise(1);
@@ -681,7 +821,6 @@ function navigateExercise(dir) {
   w.exerciseIndex = next;
   saveState();
   renderActiveWorkout();
-  // Scroll to top
   document.getElementById('exercise-carousel').scrollTop = 0;
 }
 
@@ -752,7 +891,6 @@ async function finishWorkout() {
 
   const elapsed = Math.floor((Date.now() - w.startTime) / 1000);
 
-  // Calculate summary stats
   let totalSets = 0, totalReps = 0, totalVolume = 0;
   for (const ex of w.exercises) {
     for (const set of ex.sets) {
@@ -766,7 +904,6 @@ async function finishWorkout() {
     }
   }
 
-  // Save session to history
   const session = {
     id: `session-${Date.now()}`,
     workoutId: w.workoutId,
@@ -786,18 +923,16 @@ async function finishWorkout() {
 
   await IronDB.put('sessions', session);
 
-  // Show summary
   const minutes = Math.floor(elapsed / 60);
   document.getElementById('workout-summary').innerHTML = `
     <div class="summary-stat"><span class="label">Duration</span><span class="value">${minutes} min</span></div>
     <div class="summary-stat"><span class="label">Sets completed</span><span class="value">${totalSets}</span></div>
     <div class="summary-stat"><span class="label">Total reps</span><span class="value">${totalReps}</span></div>
-    <div class="summary-stat"><span class="label">Total volume</span><span class="value">${Math.round(totalVolume).toLocaleString()} kg</span></div>
+    <div class="summary-stat"><span class="label">Total volume</span><span class="value">${Math.round(totalVolume).toLocaleString()} lbs</span></div>
   `;
 
   document.getElementById('workout-complete').classList.remove('hidden');
 
-  // Clear active workout state
   state.activeWorkout = null;
   state.workoutTimerStart = null;
   if (timerInterval) clearInterval(timerInterval);
@@ -849,7 +984,6 @@ function renderApiKeyPrompt() {
 
   document.getElementById('btn-skip-key').addEventListener('click', () => {
     prompt.remove();
-    // Show a message that coach needs API key
     const msgDiv = document.getElementById('chat-messages');
     msgDiv.innerHTML += `<div class="message assistant"><div class="message-bubble">To use the AI coach, you'll need an Anthropic API key. You can add one anytime in settings.</div></div>`;
   });
@@ -857,7 +991,6 @@ function renderApiKeyPrompt() {
 
 function renderChatMessages() {
   const container = document.getElementById('chat-messages');
-  // Keep the initial assistant message, add stored messages
   if (state.chatMessages.length > 0) {
     let html = '';
     for (const msg of state.chatMessages) {
@@ -873,7 +1006,6 @@ async function sendChatMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  // Add user message
   const userMsg = { role: 'user', content: text, ts: Date.now() };
   state.chatMessages.push(userMsg);
   await IronDB.put('chat', { ...userMsg, id: Date.now() });
@@ -881,11 +1013,9 @@ async function sendChatMessage() {
   input.value = '';
   input.style.height = 'auto';
 
-  // Render user message
   const container = document.getElementById('chat-messages');
   container.innerHTML += `<div class="message user"><div class="message-bubble">${escapeHtml(text)}</div></div>`;
 
-  // Show typing indicator
   container.innerHTML += `<div class="message assistant" id="typing"><div class="message-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div></div>`;
   container.scrollTop = container.scrollHeight;
 
@@ -899,7 +1029,6 @@ async function sendChatMessage() {
   }
 
   try {
-    // Build messages for API
     const systemPrompt = `You are Iron Coach, a knowledgeable and motivating fitness coach. The user trains 3 days per week (Tuesday, Wednesday, Friday) with a focus on hypertrophy, prioritizing biceps and forearms. Keep responses concise and practical. You can suggest exercises, adjust workout plans, explain proper form, and answer training/nutrition questions. Be encouraging but direct.`;
 
     const apiMessages = state.chatMessages
@@ -951,7 +1080,12 @@ async function sendChatMessage() {
 
 async function renderProgressView() {
   await populateExerciseSelect();
-  renderChart();
+  // Delay chart render slightly to ensure canvas is visible and sized
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      renderChart();
+    });
+  });
   renderPhotoTimeline();
   renderWorkoutHistory();
 }
@@ -963,6 +1097,13 @@ function switchProgressTab(tabId) {
   document.querySelectorAll('.ptab-content').forEach((c) => {
     c.classList.toggle('hidden', c.id !== `ptab-${tabId}`);
   });
+  // Re-render chart when switching to charts tab
+  if (tabId === 'charts') {
+    requestAnimationFrame(() => {
+      const select = document.getElementById('exercise-select');
+      renderChart(select.value || undefined);
+    });
+  }
 }
 
 async function populateExerciseSelect() {
@@ -976,26 +1117,40 @@ async function populateExerciseSelect() {
   }
 
   const select = document.getElementById('exercise-select');
+  const currentValue = select.value;
   select.innerHTML = '<option value="">Select exercise...</option>';
   for (const [id, name] of Object.entries(exerciseMap)) {
     select.innerHTML += `<option value="${id}">${name}</option>`;
   }
+  if (currentValue) select.value = currentValue;
 
-  select.addEventListener('change', () => renderChart(select.value));
+  // Remove old listener to avoid duplicates, then add new one
+  select.replaceWith(select.cloneNode(true));
+  document.getElementById('exercise-select').addEventListener('change', (e) => renderChart(e.target.value));
 }
 
 async function renderChart(exerciseId) {
   const canvas = document.getElementById('progress-chart');
+  if (!canvas) return;
+
+  // Ensure proper sizing
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 2;
+  const displayW = rect.width || 360;
+  const displayH = rect.height || 240;
+
+  canvas.width = displayW * dpr;
+  canvas.height = displayH * dpr;
+  canvas.style.width = displayW + 'px';
+  canvas.style.height = displayH + 'px';
+
   const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.offsetWidth * 2;
-  const h = canvas.height = canvas.offsetHeight * 2;
-  ctx.scale(2, 2);
-  const cw = w / 2, ch = h / 2;
+  ctx.scale(dpr, dpr);
+  const cw = displayW, ch = displayH;
 
   ctx.clearRect(0, 0, cw, ch);
   ctx.fillStyle = '#161616';
   ctx.beginPath();
-  // roundRect polyfill for older iOS Safari
   if (ctx.roundRect) {
     ctx.roundRect(0, 0, cw, ch, 14);
   } else {
@@ -1018,6 +1173,7 @@ async function renderChart(exerciseId) {
     ctx.font = '14px system-ui';
     ctx.textAlign = 'center';
     ctx.fillText('Select an exercise to see progress', cw / 2, ch / 2);
+    document.getElementById('chart-legend').innerHTML = '';
     return;
   }
 
@@ -1042,16 +1198,27 @@ async function renderChart(exerciseId) {
     }
   }
 
-  if (dataPoints.length < 2) {
+  if (dataPoints.length === 0) {
     ctx.fillStyle = '#555';
     ctx.font = '14px system-ui';
     ctx.textAlign = 'center';
-    ctx.fillText('Need at least 2 sessions to chart', cw / 2, ch / 2);
+    ctx.fillText('No data for this exercise yet', cw / 2, ch / 2);
+    document.getElementById('chart-legend').innerHTML = '';
+    return;
+  }
+
+  if (dataPoints.length === 1) {
+    ctx.fillStyle = '#555';
+    ctx.font = '14px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(`Best: ${dataPoints[0].weight} lbs`, cw / 2, ch / 2 - 10);
+    ctx.fillText('Need 2+ sessions to chart trends', cw / 2, ch / 2 + 14);
+    document.getElementById('chart-legend').innerHTML = '';
     return;
   }
 
   // Draw chart
-  const pad = { top: 20, right: 16, bottom: 30, left: 40 };
+  const pad = { top: 20, right: 16, bottom: 30, left: 44 };
   const chartW = cw - pad.left - pad.right;
   const chartH = ch - pad.top - pad.bottom;
 
@@ -1073,10 +1240,10 @@ async function renderChart(exerciseId) {
     ctx.fillStyle = '#666';
     ctx.font = '10px system-ui';
     ctx.textAlign = 'right';
-    ctx.fillText(val.toFixed(1), pad.left - 6, y + 3);
+    ctx.fillText(Math.round(val) + '', pad.left - 6, y + 3);
   }
 
-  // Line
+  // Weight line
   ctx.beginPath();
   ctx.strokeStyle = '#f97316';
   ctx.lineWidth = 2.5;
@@ -1114,7 +1281,7 @@ async function renderChart(exerciseId) {
 
   // Legend
   document.getElementById('chart-legend').innerHTML =
-    `<span style="color:#f97316">● Max weight (kg)</span>`;
+    `<span style="color:#f97316">● Max weight (lbs)</span>`;
 }
 
 // ── Photo Timeline ──────────────────────────────
@@ -1142,7 +1309,6 @@ async function handlePhotoUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
 
-  // Read as data URL
   const reader = new FileReader();
   reader.onload = async (ev) => {
     const photo = {
@@ -1158,7 +1324,7 @@ async function handlePhotoUpload(e) {
   e.target.value = '';
 }
 
-// ── Workout History ─────────────────────────────
+// ── Workout History (with delete) ───────────────
 
 async function renderWorkoutHistory() {
   const sessions = await IronDB.getAll('sessions');
@@ -1170,10 +1336,16 @@ async function renderWorkoutHistory() {
   }
 
   sessions.sort((a, b) => b.date - a.date);
-  container.innerHTML = sessions.slice(0, 20).map((s) => {
+  container.innerHTML = sessions.slice(0, 30).map((s) => {
     const d = new Date(s.date);
     const mins = Math.floor(s.duration / 60);
-    return `<div class="history-item">
+    return `<div class="history-item" data-session-id="${s.id}">
+      <button class="btn-delete-session" data-session-id="${s.id}" aria-label="Delete session">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+        </svg>
+      </button>
       <h4>${s.name}</h4>
       <div class="history-date">${d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} · ${mins} min</div>
       ${s.exercises.map((ex) => {
@@ -1181,11 +1353,24 @@ async function renderWorkoutHistory() {
         const best = doneSets.reduce((max, st) => Math.max(max, parseFloat(st.weight) || 0), 0);
         return `<div class="history-exercise">
           <span class="name">${ex.name}</span>
-          <span class="detail">${doneSets.length} sets · ${best}kg</span>
+          <span class="detail">${doneSets.length} sets · ${best} lbs</span>
         </div>`;
       }).join('')}
     </div>`;
   }).join('');
+
+  // Bind delete buttons
+  container.querySelectorAll('.btn-delete-session').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const sessionId = btn.dataset.sessionId;
+      if (confirm('Delete this workout session?')) {
+        await IronDB.del('sessions', sessionId);
+        toast('Session deleted');
+        renderWorkoutHistory();
+      }
+    });
+  });
 }
 
 // ── Utilities ───────────────────────────────────

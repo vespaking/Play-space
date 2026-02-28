@@ -39,14 +39,11 @@
 
     <!-- Workout Tab -->
     <main id="view-workout" class="view active">
-      <!-- No active workout state -->
-      <div id="workout-idle" class="screen">
-        <div class="idle-content">
-          <h1>Iron Coach</h1>
-          <p class="subtitle">Ready to train?</p>
-          <div id="todays-workout-preview"></div>
-          <button id="btn-start-workout" class="btn-primary btn-xl">Start Workout</button>
-          <button id="btn-pick-workout" class="btn-secondary">Choose Workout</button>
+      <!-- Workout selection (main screen) -->
+      <div id="workout-select" class="screen">
+        <div class="select-content">
+          <h1 class="app-title">Iron Coach</h1>
+          <div id="workout-list" class="workout-list"></div>
         </div>
       </div>
 
@@ -54,6 +51,9 @@
       <div id="workout-active" class="screen hidden">
         <header id="workout-header">
           <div class="workout-title-row">
+            <button id="btn-cancel-workout" class="btn-cancel" aria-label="Cancel workout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
             <h2 id="workout-name">Workout</h2>
             <button id="btn-finish-workout" class="btn-finish">Finish</button>
           </div>
@@ -66,23 +66,35 @@
         <div id="exercise-carousel">
           <!-- Current exercise card -->
           <div id="exercise-card" class="exercise-card">
-            <div id="exercise-illustration" class="exercise-illustration"></div>
             <h3 id="exercise-name" class="exercise-title"></h3>
             <p id="exercise-target" class="exercise-target"></p>
 
-            <!-- Sets table -->
-            <div id="sets-container" class="sets-container">
-              <div class="sets-header">
-                <span class="col-set">Set</span>
-                <span class="col-prev">Previous</span>
-                <span class="col-weight">kg</span>
-                <span class="col-reps">Reps</span>
-                <span class="col-done"></span>
-              </div>
-              <div id="sets-list"></div>
+            <!-- Exercise tabs: Info / Log -->
+            <div class="exercise-tabs">
+              <button class="ex-tab active" data-extab="log">Log</button>
+              <button class="ex-tab" data-extab="info">Info</button>
             </div>
 
-            <button id="btn-add-set" class="btn-add-set">+ Add Set</button>
+            <!-- Log tab (default) -->
+            <div id="extab-log" class="extab-content">
+              <div id="sets-container" class="sets-container">
+                <div class="sets-header">
+                  <span class="col-set">Set</span>
+                  <span class="col-prev">Previous</span>
+                  <span class="col-weight">lbs</span>
+                  <span class="col-reps">Reps</span>
+                  <span class="col-done"></span>
+                </div>
+                <div id="sets-list"></div>
+              </div>
+              <button id="btn-add-set" class="btn-add-set">+ Add Set</button>
+            </div>
+
+            <!-- Info tab -->
+            <div id="extab-info" class="extab-content hidden">
+              <div id="exercise-illustration" class="exercise-illustration"></div>
+              <div id="exercise-form-tips" class="form-tips"></div>
+            </div>
           </div>
         </div>
 
@@ -98,17 +110,6 @@
         </div>
       </div>
 
-      <!-- Workout picker modal -->
-      <div id="workout-picker" class="modal hidden">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>Choose Workout</h2>
-            <button class="btn-close" id="btn-close-picker">&times;</button>
-          </div>
-          <div id="workout-list" class="workout-list"></div>
-        </div>
-      </div>
-
       <!-- Workout complete modal -->
       <div id="workout-complete" class="modal hidden">
         <div class="modal-content modal-complete">
@@ -116,6 +117,18 @@
           <h2>Workout Complete!</h2>
           <div id="workout-summary"></div>
           <button id="btn-dismiss-complete" class="btn-primary">Done</button>
+        </div>
+      </div>
+
+      <!-- Cancel confirm modal -->
+      <div id="cancel-confirm" class="modal hidden">
+        <div class="modal-content modal-confirm">
+          <h2>End Workout?</h2>
+          <p>This workout will not be saved.</p>
+          <div class="confirm-buttons">
+            <button id="btn-cancel-no" class="btn-secondary">Keep Going</button>
+            <button id="btn-cancel-yes" class="btn-danger">Discard</button>
+          </div>
         </div>
       </div>
     </main>
